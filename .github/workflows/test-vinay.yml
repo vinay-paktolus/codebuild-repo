@@ -1,10 +1,23 @@
 name: Hello World
 on:
-    push:
-      branches:
-         - vinay-test
+  push:
+    branches:
+      - vinay-test
 jobs:
   Hello-World-Job:
     runs-on: codebuild-codebuild-runner-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
-      - run: echo "Hello World!"
+      - name: Echo Hello World
+        run: echo "Hello World!"
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}    
+          aws-region: us-east-2
+
+      - name: Run CodeBuild
+        uses: aws-actions/aws-codebuild-run-build@v1
+        with:
+          project-name: test-githubaction
